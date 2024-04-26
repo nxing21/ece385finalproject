@@ -25,7 +25,7 @@ module  ball
 //    output logic [9:0]  BallY, 
 //    output logic [9:0]  BallS 
 
-    output logic [3:0] grid[10][20]
+    output logic [3:0] grid[10][22]
 );
     
 
@@ -55,7 +55,7 @@ module  ball
     logic dummyAlive;
     
     // logic [3:0] grid[10][20];
-    logic [3:0] temp_grid[10][20];
+    logic [3:0] temp_grid[10][22];
 
     always_comb begin
 //        Ball_Y_Motion_next = Ball_Y_Motion; // set default motion to be same as prev clock cycle 
@@ -147,7 +147,7 @@ module  ball
         if (Reset)
         begin 
             for (int i = 0; i < 10; i++) begin
-                for (int j = 0; j < 20; j++) begin
+                for (int j = 0; j < 22; j++) begin
                     temp_grid[i][j] <= 0;
                 end
             end
@@ -165,7 +165,7 @@ module  ball
                     // Ball_Y_Motion_next = -10'd24;
                     // Ball_X_Motion_next = 0;
                     for (int i = 0; i < 10; i++) begin
-                        for (int j = 1; j < 20; j++) begin
+                        for (int j = 1; j < 22; j++) begin
 //                            if (grid[i][j+1] == 1) begin
 //                                temp_grid[i][j] = 1;
 //                            end
@@ -176,7 +176,7 @@ module  ball
     //                Ball_X_Motion_next = -10'd24;
     //                Ball_Y_Motion_next = 0;
                     validToMove = 1;
-                    for (int c = 0; c < 20; c++) begin
+                    for (int c = 0; c < 22; c++) begin
                         if (grid[0][c] != 0) begin
                             validToMove = 0;
                         end
@@ -184,7 +184,7 @@ module  ball
                     if (validToMove) begin
                         validToMove = 0;
                         for (int i = 0; i < 10; i++) begin
-                            for (int j = 0; j < 20; j++) begin
+                            for (int j = 0; j < 22; j++) begin
                                 if (i == 9) begin
                                     temp_grid[i][j] = 0;
                                 end else begin
@@ -205,7 +205,7 @@ module  ball
                     if (validToMove) begin
                         validToMove = 0;
                         for (int i = 0; i < 10; i++) begin
-                            for (int j = 0; j < 20; j++) begin
+                            for (int j = 0; j < 22; j++) begin
                                 if (j == 0) begin
                                     temp_grid[i][j] = 0;
                                 end else begin
@@ -216,7 +216,7 @@ module  ball
                     end
                 end else if (keycode == 8'h07) begin
                     validToMove = 1;
-                    for (int c = 0; c < 20; c++) begin
+                    for (int c = 0; c < 22; c++) begin
                         if (grid[9][c] != 0) begin
                             validToMove = 0;
                         end
@@ -224,7 +224,7 @@ module  ball
                     if (validToMove) begin
                         validToMove = 0;
                         for (int i = 0; i < 10; i++) begin
-                            for (int j = 0; j < 20; j++) begin
+                            for (int j = 0; j < 22; j++) begin
                                 if (i == 0) begin
                                     temp_grid[i][j] = 0;
                                 end else begin
