@@ -14,7 +14,8 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input  logic [3:0] grid[10][20], DrawX, DrawY,
+module  color_mapper ( input logic [3:0] grid[10][20], 
+                       input logic [9:0] DrawX, DrawY,
                        output logic [3:0]  Red, Green, Blue );
     
     logic ball_on;
@@ -52,11 +53,7 @@ module  color_mapper ( input  logic [3:0] grid[10][20], DrawX, DrawY,
     always_comb
     begin:RGB_Display
         if ((ball_on == 1'b1)) begin 
-            if (grid[(DrawX-200)/24][DrawY/24] == 1) begin
-                Red = 4'h0;
-                Green = 4'hf;
-                Blue = 4'h0;
-            end else if ((DrawX - 200) % 24 == 0) begin
+            if ((DrawX - 200) % 24 == 0) begin
                 Red = 0;
                 Green = 0;
                 Blue = 0;
@@ -64,6 +61,10 @@ module  color_mapper ( input  logic [3:0] grid[10][20], DrawX, DrawY,
                 Red = 0;
                 Green = 0;
                 Blue = 0;
+            end else if (grid[(DrawX-200)/24][DrawY/24] == 1) begin
+                Red = 4'h0;
+                Green = 4'hf;
+                Blue = 4'h0;
             end else begin
                 Red = 4'hf;
                 Green = 4'hf;
@@ -71,9 +72,9 @@ module  color_mapper ( input  logic [3:0] grid[10][20], DrawX, DrawY,
             end     
         end else begin 
             if (DrawX < 200 || DrawX > 440) begin
-                Red = 4'hf;
-                Green = 0;
-                Blue = 0;
+                Red = 4'h0;
+                Green = 4'h0;
+                Blue = 4'h0;
 //            end else if ((DrawX - 200) % 24 == 0) begin
 //                Red = 0;
 //                Green = 4'hf;

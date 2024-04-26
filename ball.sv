@@ -139,6 +139,8 @@ module  ball
 //    assign BallS = 24;  // default ball size
 //    assign Ball_X_next = (BallX + Ball_X_Motion_next);
 //    assign Ball_Y_next = (BallY + Ball_Y_Motion_next);
+
+    logic validToMove;
    
     always_ff @(posedge frame_clk) //make sure the frame clock is instantiated correctly
     begin: Move_Ball
@@ -164,36 +166,70 @@ module  ball
                     // Ball_X_Motion_next = 0;
                     for (int i = 0; i < 10; i++) begin
                         for (int j = 1; j < 20; j++) begin
-                            if (grid[i][j+1] == 1) begin
-                                temp_grid[i][j] = 1;
-                            end
+//                            if (grid[i][j+1] == 1) begin
+//                                temp_grid[i][j] = 1;
+//                            end
+                            temp_grid[i][j] = grid[i][j+1];
                         end
                     end
                 end else if (keycode == 8'h04) begin
     //                Ball_X_Motion_next = -10'd24;
     //                Ball_Y_Motion_next = 0;
-                    for (int i = 0; i < 10-1; i++) begin
-                        for (int j = 0; j < 20; j++) begin
-                            if (grid[i+1][j] == 1) begin
-                                temp_grid[i][j] = 1;
+                    validToMove = 1;
+                    for (int c = 0; c < 20; c++) begin
+                        if (grid[0][c] != 0) begin
+                            validToMove = 0;
+                        end
+                    end
+                    if (validToMove) begin
+                        validToMove = 0;
+                        for (int i = 0; i < 10; i++) begin
+                            for (int j = 0; j < 20; j++) begin
+                                if (i == 9) begin
+                                    temp_grid[i][j] = 0;
+                                end else begin
+                                    temp_grid[i][j] = grid[i+1][j];
+                                end
                             end
                         end
                     end
                 end else if (keycode == 8'h16) begin
                     // Ball_Y_Motion_next = 10'd24;
                     // Ball_X_Motion_next = 0;
-                    for (int i = 0; i < 10; i++) begin
-                        for (int j = 0; j < 20-1; j++) begin
-                            if (grid[i][j-1] == 1) begin
-                                temp_grid[i][j] = 1;
+                    validToMove = 1;
+                    for (int c = 0; c < 10; c++) begin
+                        if (grid[c][19] != 0) begin
+                            validToMove = 0;
+                        end
+                    end
+                    if (validToMove) begin
+                        validToMove = 0;
+                        for (int i = 0; i < 10; i++) begin
+                            for (int j = 0; j < 20; j++) begin
+                                if (j == 0) begin
+                                    temp_grid[i][j] = 0;
+                                end else begin
+                                    temp_grid[i][j] = grid[i][j-1];
+                                end
                             end
                         end
                     end
                 end else if (keycode == 8'h07) begin
-                    for (int i = 1; i < 10; i++) begin
-                        for (int j = 0; j < 20; j++) begin
-                            if (grid[i-1][j] == 1) begin
-                                temp_grid[i][j] = 1;
+                    validToMove = 1;
+                    for (int c = 0; c < 20; c++) begin
+                        if (grid[9][c] != 0) begin
+                            validToMove = 0;
+                        end
+                    end
+                    if (validToMove) begin
+                        validToMove = 0;
+                        for (int i = 0; i < 10; i++) begin
+                            for (int j = 0; j < 20; j++) begin
+                                if (i == 0) begin
+                                    temp_grid[i][j] = 0;
+                                end else begin
+                                    temp_grid[i][j] = grid[i-1][j];
+                                end
                             end
                         end
                     end
@@ -201,6 +237,7 @@ module  ball
             end
             
 			grid <= temp_grid;
+			prev_keycode <= keycode;
 		end  
     end
 
