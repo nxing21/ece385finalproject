@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input  logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
+module  color_mapper ( input  logic [3:0] grid[10][20], DrawX, DrawY,
                        output logic [3:0]  Red, Green, Blue );
     
     logic ball_on;
@@ -33,17 +33,17 @@ module  color_mapper ( input  logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
      of the 120 available multipliers on the chip!  Since the multiplicants are required to be signed,
 	  we have to first cast them from logic to int (signed by default) before they are multiplied). */
 	  
-    int DistX, DistY, Size;
-//    int i;
-    assign DistX = DrawX - BallX;
-    assign DistY = DrawY - BallY;    
+//    int DistX, DistY, Size;
+////    int i;
+//    assign DistX = DrawX - BallX;
+//    assign DistY = DrawY - BallY;    
     
-    assign Size = Ball_size;
+//    assign Size = Ball_size;
   
     always_comb
     begin:Ball_on_proc
     // 2x2 square
-        if ( (DistX*DistX) < (Size*Size) && (DistY*DistY) < (Size*Size))
+        if (DrawX >= 200 && DrawX <= 440)
             ball_on = 1'b1;
         else 
             ball_on = 1'b0;
@@ -52,15 +52,10 @@ module  color_mapper ( input  logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
     always_comb
     begin:RGB_Display
         if ((ball_on == 1'b1)) begin 
-            Red = 4'hf;
-            Green = 4'h7;
-            Blue = 4'h0;
-        end       
-        else begin 
-            if (DrawX < 200 || DrawX > 440) begin
-                Red = 0;
-                Green = 0;
-                Blue = 0;
+            if (grid[(DrawX-200)/24][DrawY/24] == 1) begin
+                Red = 4'h0;
+                Green = 4'hf;
+                Blue = 4'h0;
             end else if ((DrawX - 200) % 24 == 0) begin
                 Red = 0;
                 Green = 0;
@@ -69,6 +64,28 @@ module  color_mapper ( input  logic [9:0] BallX, BallY, DrawX, DrawY, Ball_size,
                 Red = 0;
                 Green = 0;
                 Blue = 0;
+            end else begin
+                Red = 4'hf;
+                Green = 4'hf;
+                Blue = 4'hf;
+            end     
+        end else begin 
+            if (DrawX < 200 || DrawX > 440) begin
+                Red = 4'hf;
+                Green = 0;
+                Blue = 0;
+//            end else if ((DrawX - 200) % 24 == 0) begin
+//                Red = 0;
+//                Green = 4'hf;
+//                Blue = 0;
+//            end else if (DrawY % 24 == 0) begin
+//                Red = 0;
+//                Green = 0;
+//                Blue = 4'hf;
+//            end else if (grid[(DrawX-200)/24][DrawY/24] == 1) begin
+//                Red = 4'hf;
+//                Green = 4'h7;
+//                Blue = 4'h0;
             end else begin
                 Red = 4'hf;
                 Green = 4'hf;

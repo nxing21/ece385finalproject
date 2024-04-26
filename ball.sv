@@ -21,9 +21,11 @@ module  ball
     input  logic        frame_clk,
     input  logic [7:0]  keycode,
 
-    output logic [9:0]  BallX, 
-    output logic [9:0]  BallY, 
-    output logic [9:0]  BallS 
+//    output logic [9:0]  BallX, 
+//    output logic [9:0]  BallY, 
+//    output logic [9:0]  BallS 
+
+    output logic [3:0] grid[10][20]
 );
     
 
@@ -51,40 +53,69 @@ module  ball
     
     logic alive;
     logic dummyAlive;
+    
+    // logic [3:0] grid[10][20];
+    logic [3:0] temp_grid[10][20];
 
     always_comb begin
-        Ball_Y_Motion_next = Ball_Y_Motion; // set default motion to be same as prev clock cycle 
-        Ball_X_Motion_next = Ball_X_Motion;
-        downTick = timer;
-        dummyAlive = alive;
+//        Ball_Y_Motion_next = Ball_Y_Motion; // set default motion to be same as prev clock cycle 
+//        Ball_X_Motion_next = Ball_X_Motion;
 
         //modify to control ball motion with the keycode
-        if (keycode != 8'h00 && prev_keycode == 8'h00) begin
-            if (keycode == 8'h1A) begin
-                // Ball_Y_Motion_next = -10'd24;
-                // Ball_X_Motion_next = 0;
-            end else if (keycode == 8'h04 && dummyAlive) begin
-                Ball_X_Motion_next = -10'd24;
-                Ball_Y_Motion_next = 0;
-            end else if (keycode == 8'h16) begin
-                // Ball_Y_Motion_next = 10'd24;
-                // Ball_X_Motion_next = 0;
-            end else if (keycode == 8'h07 && dummyAlive) begin
-                Ball_X_Motion_next = 10'd24;
-                Ball_Y_Motion_next = 0;
-            end
-        end else begin
-            Ball_X_Motion_next = 0;
-            Ball_Y_Motion_next = 0;
-        end
+//        if (keycode != 8'h00 && prev_keycode == 8'h00) begin
+//            if (keycode == 8'h1A) begin
+//                // Ball_Y_Motion_next = -10'd24;
+//                // Ball_X_Motion_next = 0;
+//                for (int i = 0; i < 10; i++) begin
+//                    for (int j = 1; j < 20; j++) begin
+//                        if (grid[i][j+1] == 1) begin
+//                            temp_grid[i][j] = 1;
+//                        end
+//                    end
+//                end
+//            end else if (keycode == 8'h04) begin
+////                Ball_X_Motion_next = -10'd24;
+////                Ball_Y_Motion_next = 0;
+//                for (int i = 0; i < 10-1; i++) begin
+//                    for (int j = 0; j < 20; j++) begin
+//                        if (grid[i+1][j] == 1) begin
+//                            temp_grid[i][j] = 1;
+//                        end
+//                    end
+//                end
+//            end else if (keycode == 8'h16) begin
+//                // Ball_Y_Motion_next = 10'd24;
+//                // Ball_X_Motion_next = 0;
+//                for (int i = 0; i < 10; i++) begin
+//                    for (int j = 0; j < 20-1; j++) begin
+//                        if (grid[i][j-1] == 1) begin
+//                            temp_grid[i][j] = 1;
+//                        end
+//                    end
+//                end
+//            end else if (keycode == 8'h07) begin
+////                Ball_X_Motion_next = 10'd24;
+////                Ball_Y_Motion_next = 0;
+//                for (int i = 1; i < 10; i++) begin
+//                    for (int j = 0; j < 20; j++) begin
+//                        if (grid[i-1][j] == 1) begin
+//                            temp_grid[i][j] = 1;
+//                        end
+//                    end
+//                end
+//            end
+//        end else begin
+////            Ball_X_Motion_next = 0;
+////            Ball_Y_Motion_next = 0;
+//        end
         
-        if (downTick >= 50) begin
-            if (BallY < Ball_Y_Max - BallS && dummyAlive) begin
-                Ball_Y_Motion_next = 24;
-            end else begin
-                Ball_Y_Motion_next = 0;
-            end
-        end
+//        if (downTick >= 50) begin
+//            if (BallY < Ball_Y_Max - BallS && dummyAlive) begin
+//                Ball_Y_Motion_next = 24;
+//            end else begin
+//                Ball_Y_Motion_next = 0;
+//            end
+//        end
 
 //        if ( (BallY + BallS) >= Ball_Y_Max )  // Ball is at the bottom edge, BOUNCE!
 //        begin
@@ -105,47 +136,71 @@ module  ball
 //        end
     end
 
-    assign BallS = 24;  // default ball size
-    assign Ball_X_next = (BallX + Ball_X_Motion_next);
-    assign Ball_Y_next = (BallY + Ball_Y_Motion_next);
+//    assign BallS = 24;  // default ball size
+//    assign Ball_X_next = (BallX + Ball_X_Motion_next);
+//    assign Ball_Y_next = (BallY + Ball_Y_Motion_next);
    
     always_ff @(posedge frame_clk) //make sure the frame clock is instantiated correctly
     begin: Move_Ball
         if (Reset)
         begin 
-            Ball_Y_Motion <= 10'd0; //Ball_Y_Step;
-			Ball_X_Motion <= 10'd0; //Ball_X_Step;
-            
-			BallY <= Ball_Y_Center;
-			BallX <= Ball_X_Center;
-			
-			timer <= 0;
-			downTick <= 0;
-			alive <= 1;
-			dummyAlive <= 1;
-        end
-        else 
-        begin 
-            
-			Ball_Y_Motion <= Ball_Y_Motion_next; 
-			Ball_X_Motion <= Ball_X_Motion_next; 
-			
-			if (!(Ball_Y_next > Ball_Y_Max || Ball_Y_next < Ball_Y_Min || Ball_X_next > Ball_X_Max || Ball_X_next < Ball_X_Min)) begin
-                BallY <= Ball_Y_next;  // Update ball position
-                BallX <= Ball_X_next;
+            for (int i = 0; i < 10; i++) begin
+                for (int j = 0; j < 20; j++) begin
+                    temp_grid[i][j] <= 0;
+                end
             end
             
-            prev_keycode <= keycode;
-            timer <= timer + 1;
-			
-			if (timer >= 50) begin
-			    timer <= 0;
-			    
-			    if (BallY > Ball_Y_Max - BallS) begin
-			        alive <= 0;
-			    end
-			end
-			
+            temp_grid[5][1] <= 1;
+            temp_grid[6][1] <= 1;
+            temp_grid[5][2] <= 1;
+            temp_grid[6][2] <= 1;
+            
+            grid <= temp_grid;
+
+        end else begin
+            if (keycode != 8'h00 && prev_keycode == 8'h00) begin
+                if (keycode == 8'h1A) begin
+                    // Ball_Y_Motion_next = -10'd24;
+                    // Ball_X_Motion_next = 0;
+                    for (int i = 0; i < 10; i++) begin
+                        for (int j = 1; j < 20; j++) begin
+                            if (grid[i][j+1] == 1) begin
+                                temp_grid[i][j] = 1;
+                            end
+                        end
+                    end
+                end else if (keycode == 8'h04) begin
+    //                Ball_X_Motion_next = -10'd24;
+    //                Ball_Y_Motion_next = 0;
+                    for (int i = 0; i < 10-1; i++) begin
+                        for (int j = 0; j < 20; j++) begin
+                            if (grid[i+1][j] == 1) begin
+                                temp_grid[i][j] = 1;
+                            end
+                        end
+                    end
+                end else if (keycode == 8'h16) begin
+                    // Ball_Y_Motion_next = 10'd24;
+                    // Ball_X_Motion_next = 0;
+                    for (int i = 0; i < 10; i++) begin
+                        for (int j = 0; j < 20-1; j++) begin
+                            if (grid[i][j-1] == 1) begin
+                                temp_grid[i][j] = 1;
+                            end
+                        end
+                    end
+                end else if (keycode == 8'h07) begin
+                    for (int i = 1; i < 10; i++) begin
+                        for (int j = 0; j < 20; j++) begin
+                            if (grid[i-1][j] == 1) begin
+                                temp_grid[i][j] = 1;
+                            end
+                        end
+                    end
+                end
+            end
+            
+			grid <= temp_grid;
 		end  
     end
 
