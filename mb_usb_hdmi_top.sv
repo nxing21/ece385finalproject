@@ -44,7 +44,7 @@ module mb_usb_hdmi_top(
     logic clk_25MHz, clk_125MHz, clk, clk_100MHz;
     logic locked;
     logic [9:0] drawX, drawY, ballxsig, ballysig, ballsizesig;
-    logic [3:0] block_grid[10][20];
+    logic [3:0] block_grid[10][22];
 
     logic hsync, vsync, vde;
     logic [3:0] red, green, blue;

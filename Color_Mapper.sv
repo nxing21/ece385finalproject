@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input logic [3:0] grid[10][20], 
+module  color_mapper ( input logic [3:0] grid[10][22], 
                        input logic [9:0] DrawX, DrawY,
                        output logic [3:0]  Red, Green, Blue );
     
@@ -61,10 +61,14 @@ module  color_mapper ( input logic [3:0] grid[10][20],
                 Red = 0;
                 Green = 0;
                 Blue = 0;
-            end else if (grid[(DrawX-200)/24][DrawY/24] == 1) begin
+            end else if (grid[(DrawX-200)/24][DrawY/24+2] == 1) begin
                 Red = 4'h0;
                 Green = 4'hf;
                 Blue = 4'h0;
+            end else if (grid[(DrawX-200)/24][DrawY/24+2] == 2) begin
+                Red = 4'h7;
+                Green = 4'h7;
+                Blue = 4'h7;
             end else begin
                 Red = 4'hf;
                 Green = 4'hf;
