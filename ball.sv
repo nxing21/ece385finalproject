@@ -62,12 +62,15 @@ module  ball
     logic validToDrop, validToDropTemp;
     logic generateNew;
     logic findFirstPixel;
+    logic [4:0] tx, ty, nx, ny;
 
 
     always_comb begin
         
         temp_grid = grid;
         randTemp = rand_num;
+        tx = nx;
+        ty = ny;
         
         // check if okay to drop
         validToDropTemp = 1;
@@ -125,42 +128,56 @@ module  ball
                 temp_grid[5][0] = 2;
                 temp_grid[4][1] = 2;
                 temp_grid[5][1] = 2;
+                tx = 4;
+                ty = 0;
             // 4x1 block
             end else if (randTemp == 1) begin
                 temp_grid[3][1] = 3;
                 temp_grid[4][1] = 3;
                 temp_grid[5][1] = 3;
                 temp_grid[6][1] = 3;
+                tx = 3;
+                ty = 1;
             // s block
             end else if (randTemp == 2) begin
                 temp_grid[4][1] = 4;
                 temp_grid[5][1] = 4;
                 temp_grid[5][0] = 4;
                 temp_grid[6][0] = 4;
+                tx = 4;
+                ty = 1;
             // z block
             end else if (randTemp == 3) begin
                 temp_grid[4][0] = 5;
                 temp_grid[5][0] = 5;
                 temp_grid[5][1] = 5;
                 temp_grid[6][1] = 5;
+                tx = 4;
+                ty = 0;
             // l block
             end else if (randTemp == 4) begin
                 temp_grid[4][1] = 6;
                 temp_grid[5][1] = 6;
                 temp_grid[6][1] = 6;
                 temp_grid[6][0] = 6;
+                tx = 4;
+                ty = 1;
             // j block
             end else if (randTemp == 5) begin
                 temp_grid[4][0] = 7;
                 temp_grid[4][1] = 7;
                 temp_grid[5][1] = 7;
                 temp_grid[6][1] = 7;
+                tx = 4;
+                ty = 0;
             // t block
             end else if (randTemp == 6) begin
                 temp_grid[4][1] = 8;
                 temp_grid[5][1] = 8;
                 temp_grid[5][0] = 8;
                 temp_grid[6][1] = 8;
+                tx = 4;
+                ty = 1;
             end
         end
         
@@ -171,42 +188,44 @@ module  ball
 //                rand_num += 1;
                 
                 // 2x2 block
-//                if (grid[tx][ty] == 2) begin
-//                    // do nothing
-//                end
+                if (grid[nx][ny] == 2) begin
+                    // do nothing
+                end
                 
-//                // 4x1 block
-//                else if (grid[tx][ty] == 3) begin
-//                    if (rotated[0] == 0) begin
-//                        if (ty <= 0 || ty >= 20 || grid[tx+1][ty-1] == 1 || grid[tx+1][ty+1] == 1 || grid[tx+1][ty+2] == 1) begin
-//                            // do nothing
-//                        end else begin
-//                            rotated += 1;
-//                            temp_grid[tx][ty] = 0;
-//                            temp_grid[tx+2][ty] = 0;
-//                            temp_grid[tx+3][ty] = 0;
-//                            temp_grid[tx+1][ty-1] = 3;
-//                            temp_grid[tx+1][ty+1] = 3;
-//                            temp_grid[tx+1][ty+2] = 3;
-//                            tx = tx+1;
-//                            ty = ty-1;
-//                        end
-//                    end else begin
-//                        if (tx <= 0 || tx >= 8 || grid[tx-1][ty+1] == 1 || grid[tx+1][ty+1] == 1 || grid[tx+2][ty+1] == 1) begin
-//                            // do nothing
-//                        end else begin
-//                            rotated += 1;
-//                            temp_grid[tx][ty] = 0;
-//                            temp_grid[tx][ty+2] = 0;
-//                            temp_grid[tx][ty+3] = 0;
-//                            temp_grid[tx-1][ty+1] = 0;
-//                            temp_grid[tx+1][ty+1] = 0;
-//                            temp_grid[tx+2][ty+1] = 0;
-//                            tx = tx-1;
-//                            ty = ty+1;
-//                        end
-//                    end
-//                end else if (grid[tx][ty] == 4) begin
+                // 4x1 block
+                else if (grid[nx][ny] == 3) begin
+                    if (rotated[0] == 0) begin
+                        if (ny <= 0 || ny >= 20 || grid[nx+1][ny-1] == 1 || grid[nx+1][ny+1] == 1 || grid[nx+1][ny+2] == 1) begin
+                            // do nothing
+                        end else begin
+                            rotated += 1;
+                            temp_grid[nx][ny] = 0;
+                            temp_grid[nx+2][ny] = 0;
+                            temp_grid[nx+3][ny] = 0;
+                            temp_grid[nx+1][ny-1] = 3;
+                            temp_grid[nx+1][ny+1] = 3;
+                            temp_grid[nx+1][ny+2] = 3;
+                            tx = nx+1;
+                            ty = ny-1;
+                        end
+                    end else begin
+                        if (nx <= 0 || nx >= 8 || grid[nx-1][ny+1] == 1 || grid[nx+1][ny+1] == 1 || grid[nx+2][ny+1] == 1) begin
+                            // do nothing
+                        end else begin
+                            rotated += 1;
+                            temp_grid[nx][ny] = 0;
+                            temp_grid[nx][ny+2] = 0;
+                            temp_grid[nx][ny+3] = 0;
+                            temp_grid[nx-1][ny+1] = 0;
+                            temp_grid[nx+1][ny+1] = 0;
+                            temp_grid[nx+2][ny+1] = 0;
+                            tx = nx-1;
+                            ty = ny+1;
+                        end
+                    end
+                end
+                
+//                else if (grid[tx][ty] == 4) begin
                 
 //                end
                 
@@ -409,6 +428,7 @@ module  ball
                 end
                 
                 if (validToMove) begin
+                    tx -= 1;
                     for (int i = 0; i < 10; i++) begin
                         for (int j = 0; j < 22; j++) begin
                             if (grid[i][j] == 1) begin
@@ -443,6 +463,7 @@ module  ball
                 end
                 
                 if (validToMove) begin
+                    tx += 1;
                     for (int i = 0; i < 10; i++) begin
                         for (int j = 0; j < 22; j++) begin
                             if (grid[i][j] == 1) begin
@@ -475,6 +496,8 @@ module  ball
             grid[5][2] <= 2;
             grid[4][3] <= 2;
             grid[5][3] <= 2;
+            nx <= 4;
+            ny <= 2;
             
             // grid <= temp_grid;
             timer <= 0;
@@ -486,6 +509,8 @@ module  ball
 
         end else begin
         
+            nx <= tx;
+            ny <= ty;
             rand_num <= randTemp;
             grid <= temp_grid;
             sq_grid <= temp_grid;
@@ -496,6 +521,7 @@ module  ball
             if (timer == 20) begin
                 
                 if (validToDrop) begin
+                    ny += 1;
                     for (int i = 0; i < 10; i++) begin
                         for (int j = 0; j < 22; j++) begin
                             if (j == 0) begin
