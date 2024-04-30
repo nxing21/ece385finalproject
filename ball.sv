@@ -56,13 +56,12 @@ module  ball
     logic [3:0] sq_grid[10][22];
     
     logic validToMove;
-    logic blankBoard;
-    logic blankBoardTemp;
     logic rowComplete;
-    logic [3:0] rand_num, randTemp;
+    logic [2:0] rand_num, randTemp;
     logic [1:0] rotated;
-    logic validToDrop;
-    logic validToDropTemp;
+    logic validToDrop, validToDropTemp;
+    logic generateNew;
+    logic findFirstPixel;
 
 
     always_comb begin
@@ -70,6 +69,7 @@ module  ball
         temp_grid = grid;
         randTemp = rand_num;
         
+        // check if okay to drop
         validToDropTemp = 1;
         for (int i = 0; i < 10; i++) begin
             for (int j = 0; j < 22; j++) begin
@@ -84,14 +84,131 @@ module  ball
             end
         end
         
-        // timerTemp = timer;
+        // deactivate block and generate new block
+        if (generateNew) begin
+        
+            // delete rows
+            for (int j = 0; j < 22; j++) begin
+                temp_temp_grid = temp_grid;
+                rowComplete = 1;
+                for (int i = 0; i < 10; i++) begin
+                    if (temp_temp_grid[i][j] != 1) begin
+                        rowComplete = 0;
+                    end
+                end
+                if (rowComplete) begin
+                    for (int i = 0; i < 10; i++) begin
+                        temp_grid[i][j] = 0;
+                    end
+                    
+                    for (int k = 0; k < 10; k++) begin
+                        for (int l = 0; l <= j; l++) begin
+                            if (l == 0) begin
+                                temp_grid[k][l] = 0;
+                            end else begin
+                                temp_grid[k][l] = temp_temp_grid[k][l-1];
+                            end
+                        end
+                    end
+                end
+            end
+            
+            // hardcode new block
+            randTemp += 1;
+            if (randTemp >= 7) begin
+                randTemp = 0;
+            end
+            
+            // 2x2 block
+            if (randTemp == 0) begin
+                temp_grid[4][0] = 2;
+                temp_grid[5][0] = 2;
+                temp_grid[4][1] = 2;
+                temp_grid[5][1] = 2;
+            // 4x1 block
+            end else if (randTemp == 1) begin
+                temp_grid[3][1] = 3;
+                temp_grid[4][1] = 3;
+                temp_grid[5][1] = 3;
+                temp_grid[6][1] = 3;
+            // s block
+            end else if (randTemp == 2) begin
+                temp_grid[4][1] = 4;
+                temp_grid[5][1] = 4;
+                temp_grid[5][0] = 4;
+                temp_grid[6][0] = 4;
+            // z block
+            end else if (randTemp == 3) begin
+                temp_grid[4][0] = 5;
+                temp_grid[5][0] = 5;
+                temp_grid[5][1] = 5;
+                temp_grid[6][1] = 5;
+            // l block
+            end else if (randTemp == 4) begin
+                temp_grid[4][1] = 6;
+                temp_grid[5][1] = 6;
+                temp_grid[6][1] = 6;
+                temp_grid[6][0] = 6;
+            // j block
+            end else if (randTemp == 5) begin
+                temp_grid[4][0] = 7;
+                temp_grid[4][1] = 7;
+                temp_grid[5][1] = 7;
+                temp_grid[6][1] = 7;
+            // t block
+            end else if (randTemp == 6) begin
+                temp_grid[4][1] = 8;
+                temp_grid[5][1] = 8;
+                temp_grid[5][0] = 8;
+                temp_grid[6][1] = 8;
+            end
+        end
         
         // keycode logic
-        if (keycode != 8'h00 && prev_keycode == 8'h00) begin
+        else if (keycode != 8'h00 && prev_keycode == 8'h00) begin
             // w key
             if (keycode == 8'h1A) begin
 //                rand_num += 1;
-//                rotated += 1;
+                
+                // 2x2 block
+//                if (grid[tx][ty] == 2) begin
+//                    // do nothing
+//                end
+                
+//                // 4x1 block
+//                else if (grid[tx][ty] == 3) begin
+//                    if (rotated[0] == 0) begin
+//                        if (ty <= 0 || ty >= 20 || grid[tx+1][ty-1] == 1 || grid[tx+1][ty+1] == 1 || grid[tx+1][ty+2] == 1) begin
+//                            // do nothing
+//                        end else begin
+//                            rotated += 1;
+//                            temp_grid[tx][ty] = 0;
+//                            temp_grid[tx+2][ty] = 0;
+//                            temp_grid[tx+3][ty] = 0;
+//                            temp_grid[tx+1][ty-1] = 3;
+//                            temp_grid[tx+1][ty+1] = 3;
+//                            temp_grid[tx+1][ty+2] = 3;
+//                            tx = tx+1;
+//                            ty = ty-1;
+//                        end
+//                    end else begin
+//                        if (tx <= 0 || tx >= 8 || grid[tx-1][ty+1] == 1 || grid[tx+1][ty+1] == 1 || grid[tx+2][ty+1] == 1) begin
+//                            // do nothing
+//                        end else begin
+//                            rotated += 1;
+//                            temp_grid[tx][ty] = 0;
+//                            temp_grid[tx][ty+2] = 0;
+//                            temp_grid[tx][ty+3] = 0;
+//                            temp_grid[tx-1][ty+1] = 0;
+//                            temp_grid[tx+1][ty+1] = 0;
+//                            temp_grid[tx+2][ty+1] = 0;
+//                            tx = tx-1;
+//                            ty = ty+1;
+//                        end
+//                    end
+//                end else if (grid[tx][ty] == 4) begin
+                
+//                end
                 
 //                for (int i = 0; i < 10; i++) begin
 //                    for (int j = 0; j < 22; j++) begin
@@ -177,100 +294,100 @@ module  ball
 //                        end
                         
 //                        // l block
-////                        else if (grid[i][j] == 6) begin
-////                            if (rotated == 0) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else if (rotated == 1) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else if (rotated == 2) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end 
-////                            // end loop
-////                            i = 10;
-////                            j = 22;
-////                        end
+//                        else if (grid[i][j] == 6) begin
+//                            if (rotated == 0) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else if (rotated == 1) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else if (rotated == 2) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end 
+//                            // end loop
+//                            i = 10;
+//                            j = 22;
+//                        end
                         
-////                        // j block
-////                        else if (grid[i][j] == 7) begin
-////                            if (rotated == 0) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else if (rotated == 1) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else if (rotated == 2) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end 
-////                            // end loop
-////                            i = 10;
-////                            j = 22;
-////                        end
+//                        // j block
+//                        else if (grid[i][j] == 7) begin
+//                            if (rotated == 0) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else if (rotated == 1) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else if (rotated == 2) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end 
+//                            // end loop
+//                            i = 10;
+//                            j = 22;
+//                        end
                         
-////                        // t block
-////                        else if (grid[i][j] == 8) begin
-////                            if (rotated == 0) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else if (rotated == 1) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else if (rotated == 2) begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end else begin
-////                                if (1) begin
-////                                    rotated = (rotated-1)%4;
-////                                end else begin
-////                                    // changes
-////                                end
-////                            end 
-////                            // end loop
-////                            i = 10;
-////                            j = 22;
-////                        end
+//                        // t block
+//                        else if (grid[i][j] == 8) begin
+//                            if (rotated == 0) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else if (rotated == 1) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else if (rotated == 2) begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end else begin
+//                                if (1) begin
+//                                    rotated = (rotated-1)%4;
+//                                end else begin
+//                                    // changes
+//                                end
+//                            end 
+//                            // end loop
+//                            i = 10;
+//                            j = 22;
+//                        end
 //                    end
 //                end
                 
@@ -361,12 +478,11 @@ module  ball
             
             // grid <= temp_grid;
             timer <= 0;
-            blankBoard <= 1;
-            // blankBoardTemp <= 1;
-            rand_num <= 1;
+            rand_num <= 0;
             rotated <= 0;
             validToMove <= 1;
             validToDrop <= 1;
+            generateNew <= 0;
 
         end else begin
         
@@ -374,31 +490,10 @@ module  ball
             grid <= temp_grid;
             sq_grid <= temp_grid;
             validToDrop <= validToDropTemp;
+            generateNew <= 0;
             
             // drop logic
             if (timer == 20) begin
-                
-//                validToMove = 1;
-//                for (int i = 0; i < 10; i++) begin
-//                    for (int j = 0; j < 22; j++) begin
-//                        // if cur is active and invalid --> not valid to move
-//                        if (grid[i][j] >= 2) begin
-//                            if (j+1 >= 22) begin
-//                                validToMove <= 0;
-//                            end else if (grid[i][j+1] != 0 && grid[i][j+1] != grid[i][j]) begin
-//                                validToMove <= 0;
-//                            end
-//                        end
-//                    end
-//                end
-
-                
-                
-                // if no blocks exist yet
-//                if (blankBoard) begin
-//                    blankBoard <= 0;
-//                    validToDrop <= 0;
-//                end
                 
                 if (validToDrop) begin
                     for (int i = 0; i < 10; i++) begin
@@ -417,7 +512,6 @@ module  ball
                     
                 // deactivate current block and generate new block
                 end else begin
-                    // blankBoard <= 0;
                     for (int i = 0; i < 10; i++) begin
                         for (int j = 0; j < 22; j++) begin
                             if (sq_grid[i][j] >= 2) begin
@@ -426,93 +520,16 @@ module  ball
                         end
                     end
                     
-                    // delete rows
-                    for (int j = 0; j < 22; j++) begin
-                        temp_temp_grid = grid;
-                        rowComplete <= 1;
-                        for (int i = 0; i < 10; i++) begin
-                            if (temp_temp_grid[i][j] != 1) begin
-                                rowComplete <= 0;
-                            end
-                        end
-                        if (rowComplete == 1) begin
-                            for (int i = 0; i < 10; i++) begin
-                                grid[i][j] <= 0;
-                            end
-                            
-                            for (int k = 0; k < 10; k++) begin
-                                for (int l = 0; l <= j; l++) begin
-                                    if (l == 0) begin
-                                        grid[k][l] <= 0;
-                                    end else begin
-                                        grid[k][l] <= temp_temp_grid[k][l-1];
-                                    end
-                                end
-                            end
-                        end
-                    end
-                    
-                    // hardcode new block
-                    rand_num <= rand_num+1;
-                    if (rand_num >= 7) begin
-                        rand_num = 0;
-                    end
-                    
-                    // 2x2 block
-                    if (rand_num == 0) begin
-                        grid[4][0] <= 2;
-                        grid[5][0] <= 2;
-                        grid[4][1] <= 2;
-                        grid[5][1] <= 2;
-                    // 4x1 block
-                    end else if (rand_num == 1) begin
-                        grid[3][1] <= 3;
-                        grid[4][1] <= 3;
-                        grid[5][1] <= 3;
-                        grid[6][1] <= 3;
-                    // s block
-                    end else if (rand_num == 2) begin
-                        grid[4][1] <= 4;
-                        grid[5][1] <= 4;
-                        grid[5][0] <= 4;
-                        grid[6][0] <= 4;
-                    // z block
-                    end else if (rand_num == 3) begin
-                        grid[4][0] <= 5;
-                        grid[5][0] <= 5;
-                        grid[5][1] <= 5;
-                        grid[6][1] <= 5;
-                    // l block
-                    end else if (rand_num == 4) begin
-                        grid[4][1] <= 6;
-                        grid[5][1] <= 6;
-                        grid[6][1] <= 6;
-                        grid[6][0] <= 6;
-                    // j block
-                    end else if (rand_num == 5) begin
-                        grid[4][0] <= 7;
-                        grid[4][1] <= 7;
-                        grid[5][1] <= 7;
-                        grid[6][1] <= 7;
-                    // t block
-                    end else if (rand_num == 6) begin
-                        grid[4][1] <= 8;
-                        grid[5][1] <= 8;
-                        grid[5][0] <= 8;
-                        grid[6][1] <= 8;
-                    end
+                    generateNew <= 1;
                 end
             end
             
             prev_keycode <= keycode;
-            // blankBoard <= blankBoardTemp;
             
             timer <= timer + 1;
             if (timer >= 21) begin
                 timer <= 0;
             end
-            
-            // grid <= temp_grid;
         
         end
     end
