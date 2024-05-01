@@ -291,6 +291,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx+2][ny] = 0;
                             temp_grid[nx+2][ny-1] = 0;
+                            tx = nx + 1;
+                            ty = ny - 1;
                         end
                     end else if (rotatedTemp == 1) begin
                         if (nx <= 0 || grid[nx-1][ny+1] == 1 || grid[nx-1][ny+2] == 1 || grid[nx+1][ny+1] == 1) begin
@@ -303,6 +305,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx][ny+2] = 0;
                             temp_grid[nx+1][ny+2] = 0;
+                            tx = nx - 1;
+                            ty = ny + 1;
                         end
                     end else if (rotatedTemp == 2) begin
                         if (ny <= 0 || grid[nx][ny-1] == 1 || grid[nx+1][ny-1] == 1 || grid[nx+1][ny+1] == 1) begin
@@ -315,6 +319,8 @@ module  ball
                             temp_grid[nx][ny+1] = 0;
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx+2][ny] = 0;
+                            tx = nx;
+                            ty = ny - 1;
                         end
                     end else begin
                         if (nx >= 8 || grid[nx+2][ny] == 1 || grid[nx+2][ny+1] == 1 || grid[nx][ny+1] == 1) begin
@@ -327,6 +333,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx+1][ny] = 0;
                             temp_grid[nx+1][ny+2] = 0;
+                            ty = nx;
+                            ty = ny + 1;
                         end
                     end
                 end
@@ -344,6 +352,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx][ny+1] = 0;
                             temp_grid[nx+2][ny+1] = 0;
+                            tx = nx + 1;
+                            ty = ny;
                         end
                     end else if (rotatedTemp == 1) begin
                         if (nx <= 0 || grid[nx-1][ny+1] == 1 || grid[nx+1][ny+1] == 1 || grid[nx+1][ny+2] == 1) begin
@@ -356,6 +366,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx+1][ny] = 0;
                             temp_grid[nx][ny+2] = 0;
+                            tx = nx - 1;
+                            ty = ny + 1;
                         end
                     end else if (rotatedTemp == 2) begin
                         if (ny <= 0 || grid[nx][ny+1] == 1 || grid[nx+1][ny+1] == 1 || grid[nx+1][ny-1] == 1) begin
@@ -368,6 +380,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx+2][ny] = 0;
                             temp_grid[nx+2][ny+1] = 0;
+                            tx = nx;
+                            ty = ny + 1;
                         end
                     end else begin
                         if (nx >= 8 || grid[nx][ny-1] == 1 || grid[nx][ny-2] == 1 || grid[nx+2][ny-1] == 1) begin
@@ -380,6 +394,8 @@ module  ball
                             temp_grid[nx][ny] = 0;
                             temp_grid[nx+1][ny] = 0;
                             temp_grid[nx+1][ny-2] = 0;
+                            tx = nx;
+                            ty = ny - 2;
                         end
                     end 
                 end
