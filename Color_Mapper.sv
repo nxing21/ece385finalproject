@@ -14,7 +14,7 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input logic [3:0] grid[10][22], 
+module  color_mapper ( input logic [2:0] grid[10][22], 
                        input logic [9:0] DrawX, DrawY,
                        output logic [3:0]  Red, Green, Blue );
     
@@ -43,8 +43,7 @@ module  color_mapper ( input logic [3:0] grid[10][22],
   
     always_comb
     begin:Ball_on_proc
-    // 2x2 square
-        if (DrawX >= 200 && DrawX <= 440)
+        if (DrawX >= 240 && DrawX < 400 && DrawY >= 80 && DrawY < 400)
             ball_on = 1'b1;
         else 
             ball_on = 1'b0;
@@ -53,55 +52,63 @@ module  color_mapper ( input logic [3:0] grid[10][22],
     always_comb
     begin:RGB_Display
         if ((ball_on == 1'b1)) begin 
-            if ((DrawX - 200) % 24 == 0) begin
-                Red = 0;
-                Green = 0;
-                Blue = 0;
-            end else if (DrawY % 24 == 0) begin
-                Red = 0;
-                Green = 0;
-                Blue = 0;
-            end else if (grid[(DrawX-200)/24][DrawY/24+2] == 1) begin
-                Red = 4'h0;
-                Green = 4'hf;
-                Blue = 4'h0;
-            end else if (grid[(DrawX-200)/24][DrawY/24+2] == 2) begin
-                Red = 4'h7;
-                Green = 4'h7;
-                Blue = 4'h7;
-            end else begin
-                Red = 4'hf;
-                Green = 4'hf;
-                Blue = 4'hf;
-            end     
-        end else begin 
-            if (DrawX < 200 || DrawX > 440) begin
-                Red = 4'h0;
-                Green = 4'h0;
-                Blue = 4'h0;
-//            end else if ((DrawX - 200) % 24 == 0) begin
+//            if ((DrawX - 200) % 24 == 0) begin
 //                Red = 0;
-//                Green = 4'hf;
+//                Green = 0;
 //                Blue = 0;
 //            end else if (DrawY % 24 == 0) begin
 //                Red = 0;
 //                Green = 0;
-//                Blue = 4'hf;
-//            end else if (grid[(DrawX-200)/24][DrawY/24] == 1) begin
+//                Blue = 0;
+//            end else 
+            if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 1) begin
+                Red = 4'h7;
+                Green = 4'h7;
+                Blue = 4'h7;
+            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 2) begin
+                Red = 4'h0;
+                Green = 4'hf;
+                Blue = 4'h0;
+            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 3) begin
+                Red = 4'hf;
+                Green = 4'h0;
+                Blue = 4'h0;
+            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 4) begin
+                Red = 4'h0;
+                Green = 4'h0;
+                Blue = 4'hf;
+            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 5) begin
+                Red = 4'hf;
+                Green = 4'h7;
+                Blue = 4'h0;
+            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 6) begin
+                Red = 4'hf;
+                Green = 4'h9;
+                Blue = 4'h0;
+            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 7) begin
+                Red = 4'h7;
+                Green = 4'h0;
+                Blue = 4'h7;
+//            end else if (grid[(DrawX-240) >> 4][((DrawY-80)>>4) + 2] == 8) begin
 //                Red = 4'hf;
 //                Green = 4'h7;
 //                Blue = 4'h0;
             end else begin
                 Red = 4'hf;
+                Green = 4'hb;
+                Blue = 4'hc;
+            end     
+        end else begin 
+            if (DrawX < 240 || DrawX >= 400 || DrawX < 80 || DrawY >= 400) begin
+                Red = 4'h0;
+                Green = 4'h0;
+                Blue = 4'h0;
+            end else begin
+                Red = 4'hf;
                 Green = 4'hf;
                 Blue = 4'hf;
             end
-        end  
-//        if (DrawX >= 200 && (DrawX - 200) % 24 == 0) begin
-//            Red = 0;
-//            Green = 0;
-//            Blue = 0;
-//        end   
+        end
     end 
     
 endmodule
