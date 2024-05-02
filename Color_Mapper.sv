@@ -14,14 +14,35 @@
 //-------------------------------------------------------------------------
 
 
-module  color_mapper ( input logic [2:0] grid[10][22], 
+module color_mapper ( input logic [6:0] text[13],
+                       input logic [2:0] grid[10][22], 
                        input logic [9:0] DrawX, DrawY,
                        output logic [3:0]  Red, Green, Blue );
     
     logic ball_on, font_on;
     logic [10:0] addr;
     logic [7:0] data;
-    assign addr = (8'h4c << 4) + (DrawY - 224);
+    logic [3:0] ones_digit, tens_digit, hundreds_digit;
+    assign ones_digit = 0;
+    assign tens_digit = 0;
+    assign hundreds_digit = 0;
+    
+    always_comb begin
+    
+    if (DrawY >= 224 && DrawY < 240) begin
+        addr = ((text[(DrawX - 468) >> 3]) << 4) + (DrawY - 224);
+    end else begin
+        if (DrawX >= 538 && DrawX < 554) begin
+            addr = (text[8'h30 + hundreds_digit]) + (DrawY - 240);
+        end else if (DrawX >= 554 && DrawX < 570) begin
+            addr = (text[8'h30 + tens_digit]) + (DrawY - 240);
+        end else begin
+            addr = (text[8'h30 + ones_digit]) + (DrawY - 240);
+        end
+    end
+    
+    end
+    
     font_rom font_rom(.addr(addr), .data(data));
 	 
  /* Old Ball: Generated square box by checking if the current pixel is within a square of length
@@ -55,7 +76,7 @@ module  color_mapper ( input logic [2:0] grid[10][22],
      
     always_comb
     begin:font
-        if (data[(DrawX-498) & 7] == 1)
+        if (data[7-(DrawX-468) & 7] == 1)
             font_on = 1'b1;
         else
             font_on = 1'b0;
@@ -111,7 +132,11 @@ module  color_mapper ( input logic [2:0] grid[10][22],
                 Blue = 4'hc;
             end     
         end else begin 
-            if (font_on) begin
+            if (DrawX >= 468 && DrawX < 572 && DrawY >= 224 && DrawY < 240 && font_on) begin
+                Red = 4'hf;
+                Green = 4'hf;
+                Blue = 4'hf;
+            end else if (DrawX >= 538 && DrawX < 562 && DrawY >= 240 && DrawY < 256 && font_on) begin
                 Red = 4'hf;
                 Green = 4'hf;
                 Blue = 4'hf;
