@@ -17,27 +17,24 @@
 module color_mapper ( input logic [6:0] text[13],
                        input logic [2:0] grid[10][22], 
                        input logic [9:0] DrawX, DrawY,
+                       input logic [9:0] score,
                        output logic [3:0]  Red, Green, Blue );
     
     logic ball_on, font_on;
     logic [10:0] addr;
     logic [7:0] data;
-    logic [3:0] ones_digit, tens_digit, hundreds_digit;
-    assign ones_digit = 0;
-    assign tens_digit = 0;
-    assign hundreds_digit = 0;
     
     always_comb begin
     
     if (DrawY >= 224 && DrawY < 240) begin
         addr = ((text[(DrawX - 468) >> 3]) << 4) + (DrawY - 224);
     end else begin
-        if (DrawX >= 538 && DrawX < 554) begin
-            addr = (text[8'h30 + hundreds_digit]) + (DrawY - 240);
-        end else if (DrawX >= 554 && DrawX < 570) begin
-            addr = (text[8'h30 + tens_digit]) + (DrawY - 240);
+        if (DrawX >= 508 && DrawX < 524) begin
+            addr = ((8'h30 + (score / 100) % 10) << 4) + (DrawY - 240);
+        end else if (DrawX >= 524 && DrawX < 540) begin
+            addr = ((8'h30 + ((score / 10) % 10)) << 4) + (DrawY - 240);
         end else begin
-            addr = (text[8'h30 + ones_digit]) + (DrawY - 240);
+            addr = ((8'h30 + (score % 10)) << 4) + (DrawY - 240);
         end
     end
     
@@ -136,11 +133,11 @@ module color_mapper ( input logic [6:0] text[13],
                 Red = 4'hf;
                 Green = 4'hf;
                 Blue = 4'hf;
-            end else if (DrawX >= 538 && DrawX < 562 && DrawY >= 240 && DrawY < 256 && font_on) begin
+            end else if (DrawX >= 508 && DrawX < 532 && DrawY >= 240 && DrawY < 256 && font_on) begin
                 Red = 4'hf;
                 Green = 4'hf;
                 Blue = 4'hf;
-            end else if (DrawX < 240 || DrawX >= 400 || DrawX < 80 || DrawY >= 400) begin
+            end else if (DrawX < 240 || DrawX >= 400 || DrawY < 80 || DrawY >= 400) begin
                 Red = 4'h0;
                 Green = 4'h0;
                 Blue = 4'h0;
