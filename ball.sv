@@ -53,6 +53,7 @@ module  ball
     logic alreadyMoved;
     logic [9:0] scoreTemp, scoreTracker;
     logic [4:0] update, updateTemp;
+    logic dropIt, dropItTemp;
 
 
     always_comb begin
@@ -69,6 +70,7 @@ module  ball
         alreadyMoved = 0;
         tx = nx;
         ty = ny;
+        dropItTemp = dropIt;
         
         // check if okay to drop
         validToDropTemp = 1;
@@ -90,9 +92,9 @@ module  ball
         end
         
         // time cycle: update
-        if (timer == update) begin
+        if (timer == update || dropIt) begin
             // drop logic
-            if (validToDrop) begin
+            if (validToDropTemp) begin
                 alreadyMoved = 1;
                 ty = ny + 1;
                 for (int i = 0; i < 10; i++) begin
@@ -111,6 +113,7 @@ module  ball
                 
             // deactivate current block and generate new block
             end else begin
+                dropItTemp = 0;
                 for (int i = 0; i < 10; i++) begin
                     for (int j = 0; j < 22; j++) begin
                         if (grid[i][j] >= 2) begin
@@ -145,7 +148,7 @@ module  ball
                     end
                     
                     if (update > 5) begin
-                        updateTemp = update - 2;
+                        updateTemp = update - 1;
                     end
                 end
             end
@@ -153,8 +156,8 @@ module  ball
             scoreTemp = scoreTracker;
             
             // generate new block
-            if (rand_num > 5) begin
-                randTemp = rand_num % 6;
+            if (rand_num >= 5) begin
+                randTemp = rand_num % 5;
             end else begin
                 randTemp = rand_num + 1;
             end
@@ -513,7 +516,7 @@ module  ball
                 
             // s key
             end else if (keycode == 8'h16) begin
-                // do nothing
+                dropItTemp = 1;
                 
             // d key
             end else if (keycode == 8'h07) begin
@@ -572,6 +575,7 @@ module  ball
             score <= 0;
             update <= 30;
             rotatedTemp <= 0;
+            dropIt <= 0;
 
         end else begin
             // update variables
@@ -584,6 +588,7 @@ module  ball
             rotatedTemp <= rotated;
             score <= scoreTemp;
             update <= updateTemp;
+            dropIt <= dropItTemp;
             
             // update more variables
             prev_keycode <= keycode;
