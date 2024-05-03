@@ -21,6 +21,7 @@ module  ball
     input  logic        frame_clk,
     input  logic [7:0]  keycode,
 
+    output logic [9:0] score,
     output logic [2:0] grid[10][22]
 );
 	 
@@ -50,6 +51,7 @@ module  ball
     logic [4:0] nx, ny, tx, ty;
     logic blankBoard, blankBoardTemp;
     logic alreadyMoved;
+    logic [9:0] scoreTemp, scoreTracker;
 
 
     always_comb begin
@@ -59,6 +61,8 @@ module  ball
         randTemp = rand_num;
         blankBoardTemp = blankBoard;
         rotated = rotatedTemp;
+        scoreTemp = score;
+        scoreTracker = score;
         generateNew = 0;
         alreadyMoved = 0;
         tx = nx;
@@ -127,6 +131,7 @@ module  ball
                     end
                 end
                 if (rowComplete) begin
+                    scoreTracker += 1;
                     for (int k = 0; k < 10; k++) begin
                         for (int l = 0; l <= j; l++) begin
                             if (l == 0) begin
@@ -138,6 +143,8 @@ module  ball
                     end
                 end
             end
+            
+            scoreTemp = scoreTracker;
             
             // generate new block
             if (rand_num >= 5) begin
@@ -554,6 +561,7 @@ module  ball
             rand_num <= 5;
             validToDrop <= 1;
             blankBoard <= 1;
+            score <= 0;
 
         end else begin
             // update variables
@@ -564,6 +572,7 @@ module  ball
             nx <= tx;
             ny <= ty;
             rotatedTemp <= rotated;
+            score <= scoreTemp;
             
             // update more variables
             prev_keycode <= keycode;
