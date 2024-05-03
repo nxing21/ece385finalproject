@@ -145,7 +145,7 @@ module  ball
                     end
                     
                     if (update > 5) begin
-                        updateTemp = update - 1;
+                        updateTemp = update - 2;
                     end
                 end
             end
@@ -153,7 +153,7 @@ module  ball
             scoreTemp = scoreTracker;
             
             // generate new block
-            if (rand_num >= 5) begin
+            if (rand_num > 5) begin
                 randTemp = rand_num % 6;
             end else begin
                 randTemp = rand_num + 1;
