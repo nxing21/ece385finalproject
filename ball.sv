@@ -52,6 +52,7 @@ module  ball
     logic blankBoard, blankBoardTemp;
     logic alreadyMoved;
     logic [9:0] scoreTemp, scoreTracker;
+    logic alive;
 
 
     always_comb begin
@@ -148,7 +149,7 @@ module  ball
             
             // generate new block
             if (rand_num >= 5) begin
-                randTemp = 0;
+                randTemp = rand_num % 6;
             end else begin
                 randTemp = rand_num + 1;
             end
@@ -223,7 +224,7 @@ module  ball
         else if (keycode != 8'h00 && prev_keycode == 8'h00 && !alreadyMoved) begin
             // w key
             if (keycode == 8'h1A) begin
-                
+                randTemp = rand_num + 1;
                 // 4x1 block
                 if (grid[nx][ny] == 3) begin
                     if (rotatedTemp[0] == 0) begin
@@ -476,6 +477,7 @@ module  ball
                 
             // a key
             end else if (keycode == 8'h04) begin
+                randTemp = rand_num + 2;
                 validToMove = 1;
                 for (int i = 0; i < 10; i++) begin
                     for (int j = 0; j < 22; j++) begin
@@ -510,6 +512,7 @@ module  ball
                 
             // d key
             end else if (keycode == 8'h07) begin
+                randTemp = rand_num + 3;
                 validToMove = 1;
                 for (int i = 0; i < 10; i++) begin
                     for (int j = 0; j < 22; j++) begin
