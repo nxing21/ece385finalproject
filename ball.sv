@@ -52,7 +52,7 @@ module  ball
     logic blankBoard, blankBoardTemp;
     logic alreadyMoved;
     logic [9:0] scoreTemp, scoreTracker;
-    logic alive;
+    logic [4:0] update, updateTemp;
 
 
     always_comb begin
@@ -64,6 +64,7 @@ module  ball
         rotated = rotatedTemp;
         scoreTemp = score;
         scoreTracker = score;
+        updateTemp = update;
         generateNew = 0;
         alreadyMoved = 0;
         tx = nx;
@@ -74,7 +75,7 @@ module  ball
         for (int i = 0; i < 10; i++) begin
             for (int j = 0; j < 22; j++) begin
                 if (grid[i][j] >= 2) begin
-                    if (j+1 >= 22) begin
+                    if (j >= 21) begin
                         validToDropTemp = 0;
                     end else if (grid[i][j+1] != 0 && grid[i][j+1] != grid[i][j]) begin
                         validToDropTemp = 0;
@@ -88,8 +89,8 @@ module  ball
             blankBoardTemp = 0;
         end
         
-        // time cycle: 20
-        if (timer == 20) begin
+        // time cycle: update
+        if (timer == update) begin
             // drop logic
             if (validToDrop) begin
                 alreadyMoved = 1;
@@ -141,6 +142,10 @@ module  ball
                                 temp_grid[k][l] = temp_temp_grid[k][l-1];
                             end
                         end
+                    end
+                    
+                    if (update > 5) begin
+                        updateTemp = update - 1;
                     end
                 end
             end
@@ -565,6 +570,8 @@ module  ball
             validToDrop <= 1;
             blankBoard <= 1;
             score <= 0;
+            update <= 30;
+            rotatedTemp <= 0;
 
         end else begin
             // update variables
@@ -576,12 +583,13 @@ module  ball
             ny <= ty;
             rotatedTemp <= rotated;
             score <= scoreTemp;
+            update <= updateTemp;
             
             // update more variables
             prev_keycode <= keycode;
             
             timer <= timer + 1;
-            if (timer >= 21) begin
+            if (timer > update) begin
                 timer <= 0;
             end
         end

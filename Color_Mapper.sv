@@ -29,9 +29,9 @@ module color_mapper ( input logic [6:0] text[13],
     if (DrawY >= 224 && DrawY < 240) begin
         addr = ((text[(DrawX - 468) >> 3]) << 4) + (DrawY - 224);
     end else begin
-        if (DrawX >= 508 && DrawX < 524) begin
+        if (DrawX >= 508 && DrawX < 516) begin
             addr = ((8'h30 + (score / 100) % 10) << 4) + (DrawY - 240);
-        end else if (DrawX >= 524 && DrawX < 540) begin
+        end else if (DrawX >= 516 && DrawX < 524) begin
             addr = ((8'h30 + ((score / 10) % 10)) << 4) + (DrawY - 240);
         end else begin
             addr = ((8'h30 + (score % 10)) << 4) + (DrawY - 240);
