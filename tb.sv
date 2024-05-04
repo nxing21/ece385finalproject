@@ -59,20 +59,58 @@ initial begin: TEST
     Reset <= 0;
     
     repeat(600) @(posedge clk);
-    keycode <= 8'h1A;
+    keycode <= 8'h04;
     repeat(5) @(posedge clk);
     keycode <= 0;
     repeat(50) @(posedge clk);
-    keycode <= 8'h1A;
+    keycode <= 8'h04;
     repeat(5) @(posedge clk);
     keycode <= 0;
-    repeat(5) @(posedge clk);
-    keycode <= 8'h1A;
+    repeat(400) @(posedge clk);
+    keycode <= 8'h04;
     repeat(5) @(posedge clk);
     keycode <= 8'h00;
-    repeat(200) @(posedge clk);
-    keycode <= 8'h1A;
+    repeat(50) @(posedge clk);
+    keycode <= 8'h04;
     repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    repeat(50) @(posedge clk);
+    keycode <= 8'h04;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    repeat(50) @(posedge clk);
+    keycode <= 8'h04;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    
+    repeat(300) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 0;
+    repeat(50) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 0;
+    repeat(300) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    repeat(10) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    repeat(10) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    repeat(10) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
+    repeat(10) @(posedge clk);
+    keycode <= 8'h07;
+    repeat(5) @(posedge clk);
+    keycode <= 8'h00;
     
 end
 

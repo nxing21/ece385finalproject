@@ -140,7 +140,7 @@ module color_mapper ( input logic [6:0] text[13],
             end else if (DrawX < 240 || DrawX >= 400 || DrawY < 80 || DrawY >= 400) begin
                 Red = 4'h0;
                 Green = 4'h0;
-                Blue = 4'h0;
+                Blue = 4'h0; // bruh
             end else begin
                 Red = 4'hf;
                 Green = 4'hf;
