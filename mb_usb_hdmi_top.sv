@@ -44,14 +44,29 @@ module mb_usb_hdmi_top(
     logic clk_25MHz, clk_125MHz, clk, clk_100MHz;
     logic locked;
     logic [9:0] drawX, drawY, ballxsig, ballysig, ballsizesig;
-    logic [3:0] block_grid[10][20];
+    logic [2:0] block_grid[10][22];
 
     logic hsync, vsync, vde;
     logic [3:0] red, green, blue;
     logic reset_ah;
+    logic [9:0] score;
+
+    logic [6:0] text[13];
     
     assign reset_ah = reset_rtl_0;
-    
+    assign text[0] = 7'h4c;
+    assign text[1] = 7'h49;
+    assign text[2] = 7'h4e;
+    assign text[3] = 7'h45;
+    assign text[4] = 7'h53;
+    assign text[5] = 7'h00;
+    assign text[6] = 7'h43;
+    assign text[7] = 7'h4c;
+    assign text[8] = 7'h45;
+    assign text[9] = 7'h41;
+    assign text[10] = 7'h52;
+    assign text[11] = 7'h45;
+    assign text[12] = 7'h44;
     
     //Keycode HEX drivers
     hex_driver HexA (
@@ -143,13 +158,16 @@ module mb_usb_hdmi_top(
 //        .BallX(ballxsig),
 //        .BallY(ballysig),
 //        .BallS(ballsizesig)
-        .grid(block_grid)
+        .grid(block_grid),
+        .score(score)
     );
     
     //Color Mapper Module   
     color_mapper color_instance(
 //        .BallX(ballxsig),
 //        .BallY(ballysig),
+        .score(score),
+        .text(text),
         .grid(block_grid),
         .DrawX(drawX),
         .DrawY(drawY),
